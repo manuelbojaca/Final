@@ -13,7 +13,7 @@ public class MapaGenerado extends Mapa {
     protected void generarMapa() {
         for (int y = 0; y < alto; y++) {
             for (int x = 0; x < ancho; x++) {
-                cuadros[x + y * ancho] = random.nextInt(4);
+                cuadros[x + y * ancho] = random.nextInt(24);
             }
         }
     }

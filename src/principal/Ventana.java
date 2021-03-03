@@ -1,12 +1,14 @@
 package principal;
 
 import animacion.Movimiento;
+import ente.criaturas.Jugador;
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import graficos.Pantalla;
+import graficos.Sprites;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
@@ -20,22 +22,25 @@ public class Ventana extends Canvas implements Runnable {
 
     private static JFrame ventana;
     private static Thread thread;
-    private static Movimiento teclado;
+    private static Movimiento movimiento;
     private static Pantalla pantalla;
     
     private static Mapa mapa;
+    
+    private static Jugador jugador;
 
     private static volatile boolean enFuncionamiento = false;
 
     private static final int ANCHO = 800;
     private static final int ALTO = 600;
     private static final String NOMBRE = "Juego";
+    
+    private static String CONTADOR_FPS = "";
+    private static String CONTADOR_APS = "";
 
     private static int aps = 0;
     private static int fps = 0;
 
-    private static int x = 0;
-    private static int y = 0;
 
     //Imagen en Buffer en blanco
     private static BufferedImage imagen = new BufferedImage(ANCHO, ALTO,
@@ -53,14 +58,18 @@ public class Ventana extends Canvas implements Runnable {
         
         mapa = new MapaGenerado(128, 128);
 
-        teclado = new Movimiento();
-        addKeyListener(teclado);
+        movimiento = new Movimiento();
+        addKeyListener(movimiento);
+        
+    //CARGAR MAPA
+        jugador = new Jugador(mapa, movimiento, Sprites.JUG_FRO0, 384, 286);
 
         ventana = new JFrame(NOMBRE);
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ventana.setResizable(false);
         ventana.setLayout(new BorderLayout());
         ventana.add(this, BorderLayout.CENTER);
+        ventana.setUndecorated(true);
         ventana.pack();
         ventana.setLocationRelativeTo(null);
         ventana.setVisible(true);
@@ -87,21 +96,13 @@ public class Ventana extends Canvas implements Runnable {
 
     private void actualizar() {
 
-        teclado.actualizar();
+        movimiento.actualizar();
+        
+        jugador.actualizar();
 
-        if (teclado.arriba) {
-            y--;
+        if (movimiento.exit){
+            System.exit(0);
         }
-        if (teclado.abajo) {
-            y++;
-        }
-        if (teclado.izquierda) {
-            x--;
-        }
-        if (teclado.derecha) {
-            x++;
-        }
-
         aps++;
     }
 
@@ -114,9 +115,11 @@ public class Ventana extends Canvas implements Runnable {
             return;
         }
 
-        pantalla.Limpiar();
+        //pantalla.Limpiar();
         //pantalla.mostrar(x, y);
-        mapa.mostrar(x, y, pantalla);
+        mapa.mostrar(jugador.getX() - pantalla.getAncho()/2 + jugador.getSprite().getLado()/2, 
+                jugador.getY() - pantalla.getAlto()/2 + jugador.getSprite().getLado()/2 , pantalla);
+        jugador.mostrar(pantalla);
 
         System.arraycopy(pantalla.pixeles, 0, pixeles, 0, pixeles.length);
         //(de que arr[] cp, ini[], a que arr[] cp, ini[], tamaño arr[]) 
@@ -131,7 +134,11 @@ public class Ventana extends Canvas implements Runnable {
         //(BufferImage, desde donde dibujar, alto ,ancho)
         //Vacea g o destruye memoria usada por g
         g.setColor(Color.white);
-        g.fillRect(ANCHO/2-16, ALTO/2-16, 32, 32);
+        //g.fillRect(ANCHO/2-16, ALTO/2-16, 32, 32);
+        g.drawString(CONTADOR_APS, 10, 20);
+        g.drawString(CONTADOR_FPS, 10, 40);
+        g.drawString("X: " + jugador.getX(), 10, 60);
+        g.drawString("Y: " + jugador.getY(), 10, 80);
         g.dispose();
 
         estrategia.show();
@@ -180,8 +187,12 @@ public class Ventana extends Canvas implements Runnable {
             mostrar();
 
             if (System.nanoTime() - referenciaContador > NS_POR_SEGUNDO) {
-
-                ventana.setTitle(NOMBRE + " || APS: " + aps + " || FPS: " + fps);
+                //DATOS EN BORDE DE VENTANA
+                //ventana.setTitle(NOMBRE + " || APS: " + aps + " || FPS: " + fps);
+                
+                CONTADOR_APS = "APS: " + aps;
+                CONTADOR_FPS = "FPS: " + fps;
+                
                 aps = 0;
                 fps = 0;
                 referenciaContador = System.nanoTime();

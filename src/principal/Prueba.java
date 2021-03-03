@@ -23,6 +23,9 @@ public class Prueba {
     public Prueba (byte dato, String name){
         System.out.println(name + ": "+ dato);
     }
+    public Prueba (String name){
+        System.out.println(name);
+    }
     public void bucle(int arr, int lado){
         for(int i = 0;i < lado;i++){
             for(int k = 0;k < lado;k++){
@@ -51,7 +54,7 @@ public class Prueba {
                 }
                 
                 //temporal
-                pixeles[posicionX + posicionY * 600] = Sprites.ASFALTO.pixeles[
+                pixeles[posicionX + posicionY * 600] = Sprites.PASTO.pixeles[
                         (x & 31) + (y & 31) * 32];
                 int a = x & 31;
                 int b = y & 31;

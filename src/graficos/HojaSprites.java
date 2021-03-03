@@ -13,6 +13,10 @@ public class HojaSprites {
     //coleccion hojas de sprites
     public static HojaSprites desierto = new HojaSprites(
             "/texturas/Desierto.png", 320, 320);
+    public static HojaSprites pasto = new HojaSprites(
+            "/texturas/Pasto.png", 320, 320);
+    public static HojaSprites jugador = new HojaSprites(
+            "/texturas/Jugador.png", 320, 320);
     //fin coleccion
     
     public HojaSprites(final String ruta, final int ancho, final int alto) {

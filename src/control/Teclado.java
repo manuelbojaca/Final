@@ -1,9 +1,9 @@
-package animacion;
+package control;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public final class Movimiento implements KeyListener {
+public final class Teclado implements KeyListener {
     
     private final static int numeroTeclas = 120;
     private final boolean[] teclas = new boolean[numeroTeclas];
@@ -13,24 +13,17 @@ public final class Movimiento implements KeyListener {
     public boolean izquierda;
     public boolean derecha;
     
-    public boolean correr;
-    
-    public boolean exit;
-    
     public void actualizar() {
         
         arriba = teclas[KeyEvent.VK_W];
         izquierda = teclas[KeyEvent.VK_A];
         abajo = teclas[KeyEvent.VK_S];
         derecha = teclas[KeyEvent.VK_D];
-        correr = teclas[KeyEvent.VK_SHIFT];
-        exit = teclas[KeyEvent.VK_ESCAPE];
-        
     }
     
     @Override
     public void keyTyped(KeyEvent e) {
-            //teclas[e.getKeyCode()] = true;
+            teclas[e.getKeyCode()] = true;
     }
 
     @Override
